@@ -8,7 +8,7 @@ import 'controller.dart';
 import 'dismissal.dart';
 import 'gesture_detector.dart';
 import 'scrolling_behavior.dart';
-
+import 'dart:async';
 part 'action_pane.dart';
 
 /// A widget which can be dragged to reveal contextual actions.
@@ -27,6 +27,7 @@ class Slidable extends StatefulWidget {
     this.direction = Axis.horizontal,
     this.dragStartBehavior = DragStartBehavior.down,
     this.useTextDirection = true,
+    this.onActionPaneStatusChanged,
     required this.child,
   }) : super(key: key);
 
@@ -100,6 +101,8 @@ class Slidable extends StatefulWidget {
   ///
   /// {@macro flutter.widgets.ProxyWidget.child}
   final Widget child;
+
+  final FutureOr<void> Function(ActionPaneType)? onActionPaneStatusChanged;
 
   @override
   _SlidableState createState() => _SlidableState();
@@ -181,6 +184,7 @@ class _SlidableState extends State<Slidable>
     setState(() {
       updateMoveAnimation();
     });
+    widget.onActionPaneStatusChanged?.call(controller.actionPaneType.value);
   }
 
   void handleDismissing() {
